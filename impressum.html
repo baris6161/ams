@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Impressum — AutoMitSchaden</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="sections.css" />
+<style>
+  .legal-page { min-height: 100vh; display: flex; flex-direction: column; }
+  .legal-main { flex: 1; padding: 120px 0 90px; }
+  .legal-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--accent-2); display: inline-flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+  .legal-eyebrow::before { content:""; width: 22px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent)); }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="legal-page">
+
+  <!-- Nav -->
+  <nav class="nav scrolled" style="position:fixed;top:0;left:0;right:0;z-index:100;">
+    <div class="container nav-in">
+      <a class="nav-logo" href="index.html">
+        <img src="assets/logo-light.png" alt="AMS" style="height:34px;" />
+      </a>
+      <div class="nav-cta">
+        <a href="index.html" class="btn btn-primary" style="padding:11px 20px;font-size:14px;">Fahrzeug bewerten</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <main class="legal-main">
+    <div class="container">
+      <article class="legal-content">
+        <span class="legal-eyebrow">Rechtliches</span>
+        <h1>Impressum</h1>
+
+        <h2>Angaben gemäß § 5 TMG</h2>
+        <p>
+          Ali El-Toufaili<br />
+          Lange-Feldstr. 52<br />
+          30926 Seelze
+        </p>
+
+        <h2>Umsatzsteuer-Identifikationsnummer</h2>
+        <p>USt-IdNr: DE368392904</p>
+
+        <h2>Kontakt</h2>
+        <p>
+          Telefon: <a href="tel:+491747406873">+49 174 7406873</a><br />
+          E-Mail: <a href="mailto:info@automitschaden.de">info@automitschaden.de</a>
+        </p>
+
+        <h2>Redaktionell verantwortlich</h2>
+        <p>Ali El-Toufaili (Betreiber der Website)</p>
+
+        <h2>Verbraucherstreitbeilegung / Universalschlichtungsstelle</h2>
+        <p>Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+
+        <h2>Zentrale Kontaktstelle nach dem Digital Services Act (DSA)</h2>
+        <p>Unsere zentrale Kontaktstelle für Nutzer und Behörden nach Art. 11, 12 DSA (Verordnung (EU) 2022/265) erreichen Sie wie folgt:</p>
+        <p>
+          E-Mail: <a href="mailto:info@automitschaden.de">info@automitschaden.de</a><br />
+          Telefon: <a href="tel:+491747406873">+49 174 7406873</a>
+        </p>
+        <p>Die für den Kontakt zur Verfügung stehenden Sprachen sind: Deutsch</p>
+      </article>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="foot-bot">
+        <span>© 2026 AutoMitSchaden · Ali El-Toufaili · Alle Rechte vorbehalten</span>
+        <span>
+          <a href="impressum.html" style="margin-right:16px;">Impressum</a>
+          <a href="datenschutz.html">Datenschutzerklärung</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+<script>
+  // Nav scroll effect
+  const nav = document.querySelector('.nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 30) nav.classList.add('scrolled');
+    else nav.classList.add('scrolled');
+  });
+</script>
+</body>
+</html>

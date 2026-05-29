@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AutoMitSchaden — Ihr Auto verkaufen, mit oder ohne Schaden</title>
+<meta name="description" content="Fahrzeug verkaufen — mit oder ohne Schaden. Kostenlose Bewertung, schnelles Angebot, bundesweite Abholung. AutoMitSchaden." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="sections.css" />
+<link rel="stylesheet" href="form.css" />
+<!-- EmailJS — set SERVICE_ID, TEMPLATE_ID and PUBLIC_KEY in src/ValuationForm.jsx -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+<div class="grain"></div>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="cookie-banner.jsx"></script>
+<script type="text/babel" src="src/lib.jsx"></script>
+<script type="text/babel" src="src/ValuationForm.jsx"></script>
+<script type="text/babel" src="src/sections.jsx"></script>
+<script type="text/babel" src="src/tweaks.jsx"></script>
+<script type="text/babel">
+  ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(window.Root));
+
+  // Scroll reveal
+  const _revealed = new WeakSet();
+  let _io;
+  function initReveal() {
+    if (!("IntersectionObserver" in window)) {
+      document.querySelectorAll("[data-reveal]").forEach((el) => el.classList.add("in"));
+      return;
+    }
+    if (!_io) {
+      _io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); _io.unobserve(e.target); } });
+      }, { threshold: 0.06, rootMargin: "0px 0px -4% 0px" });
+    }
+    document.querySelectorAll("[data-reveal]").forEach((el) => {
+      if (!_revealed.has(el)) { _revealed.add(el); _io.observe(el); }
+    });
+  }
+  initReveal();
+  setTimeout(initReveal, 80);
+  setTimeout(initReveal, 400);
+  const _mo = new MutationObserver(() => { clearTimeout(window.__rv); window.__rv = setTimeout(initReveal, 40); });
+  _mo.observe(document.getElementById("root"), { childList: true, subtree: true });
+  // Safety net
+  setTimeout(() => document.querySelectorAll("[data-reveal]:not(.in)").forEach((el) => el.classList.add("in")), 1800);
+
+  // Parallax glow on hero grid
+  window.addEventListener("scroll", () => {
+    const g = document.querySelector(".hero-grid");
+    if (g) g.style.transform = "translateY(" + window.scrollY * 0.1 + "px)";
+  }, { passive: true });
+</script>
+</body>
+</html>

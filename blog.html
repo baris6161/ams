@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Blog — AutoMitSchaden | Ratgeber Fahrzeugverkauf</title>
+<meta name="description" content="Ratgeber rund um den Verkauf beschädigter Fahrzeuge. Expertentipps zu Rahmenschaden, Totalschaden, Motorschaden und mehr." />
+<meta name="robots" content="index, follow" />
+<meta property="og:title" content="Blog — AutoMitSchaden" />
+<meta property="og:description" content="Ratgeber rund um den Verkauf beschädigter Fahrzeuge." />
+<meta property="og:type" content="website" />
+<link rel="canonical" href="https://automitschaden.de/blog.html" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="sections.css" />
+<style>
+  .blog-page { min-height: 100vh; display: flex; flex-direction: column; }
+  .blog-main { flex: 1; padding: 120px 0 90px; }
+  .blog-hero { text-align: center; margin-bottom: 70px; }
+  .blog-hero .eyebrow { justify-content: center; }
+  .blog-hero h1 { font-family: var(--font-display); font-size: clamp(34px,4.5vw,58px); font-weight: 600; letter-spacing: -.03em; margin: 16px 0 18px; line-height: 1.02; }
+  .blog-hero p { font-size: 17.5px; color: var(--paper-dim); max-width: 540px; margin: 0 auto; line-height: 1.65; }
+  .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .blog-card { background: linear-gradient(180deg, var(--ink-700), var(--ink-800)); border: 1px solid var(--hairline-strong); border-radius: var(--radius-lg); overflow: hidden; transition: transform .4s var(--ease), border-color .4s, box-shadow .4s; display: flex; flex-direction: column; }
+  .blog-card:hover { transform: translateY(-6px); border-color: rgba(78,161,255,.3); box-shadow: 0 24px 60px -20px rgba(78,161,255,.18); }
+  .blog-card-img { aspect-ratio: 16/9; overflow: hidden; background: var(--ink-800); position: relative; }
+  .blog-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); display: block; }
+  .blog-card:hover .blog-card-img img { transform: scale(1.04); }
+  .blog-card-img .blog-tag { position: absolute; top: 14px; left: 14px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; background: rgba(78,161,255,.85); color: #fff; padding: 5px 10px; border-radius: 6px; backdrop-filter: blur(8px); }
+  .blog-card-body { padding: 26px 26px 28px; flex: 1; display: flex; flex-direction: column; }
+  .blog-card-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .blog-card-meta time { font-family: var(--font-mono); font-size: 11.5px; color: var(--paper-faint); letter-spacing: .06em; }
+  .blog-card-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--paper-faint); }
+  .blog-card-meta .read-time { font-size: 12px; color: var(--paper-faint); }
+  .blog-card h2 { font-family: var(--font-display); font-size: 20px; font-weight: 600; letter-spacing: -.015em; margin-bottom: 12px; line-height: 1.2; color: var(--paper); }
+  .blog-card p { font-size: 14px; color: var(--paper-dim); line-height: 1.6; margin-bottom: 22px; flex: 1; }
+  .blog-card-link { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: var(--accent-2); transition: gap .2s; }
+  .blog-card-link:hover { gap: 11px; }
+  .blog-card-link svg { width: 14px; height: 14px; }
+  @media (max-width: 880px) { .blog-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .blog-grid { grid-template-columns: 1fr; } }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "AutoMitSchaden Blog",
+  "description": "Ratgeber rund um den Verkauf beschädigter Fahrzeuge",
+  "url": "https://automitschaden.de/blog.html",
+  "publisher": {
+    "@type": "Organization",
+    "name": "AutoMitSchaden",
+    "url": "https://automitschaden.de"
+  }
+}
+</script>
+</head>
+<body>
+<div class="grain"></div>
+<div class="blog-page">
+
+  <nav class="nav scrolled" style="position:fixed;top:0;left:0;right:0;z-index:100;">
+    <div class="container nav-in">
+      <a class="nav-logo" href="index.html">
+        <img src="assets/logo-light.png" alt="AutoMitSchaden" style="height:34px;" />
+      </a>
+      <div class="nav-links">
+        <a href="index.html#prozess">So funktioniert's</a>
+        <a href="index.html#vorteile">Vorteile</a>
+        <a href="index.html#stimmen">Bewertungen</a>
+        <a href="blog.html" style="color:var(--accent-2)">Blog</a>
+        <a href="index.html#faq">FAQ</a>
+      </div>
+      <div class="nav-cta">
+        <a href="index.html" class="btn btn-primary" style="padding:11px 20px;font-size:14px;">Fahrzeug bewerten</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="blog-main">
+    <div class="container">
+      <div class="blog-hero">
+        <span class="eyebrow">Ratgeber &amp; Tipps</span>
+        <h1>AutoMitSchaden Blog</h1>
+        <p>Expertenwissen rund um Unfallwagen, Motorschaden, Totalschaden und alles, was Sie beim Fahrzeugverkauf wissen müssen.</p>
+      </div>
+
+      <div class="blog-grid">
+
+        <a href="blog/rahmenschaden-auto.html" class="blog-card" style="text-decoration:none;">
+          <div class="blog-card-img">
+            <img src="assets/blog/rahmenschaden.jpg" alt="Unfallfahrzeug mit Rahmenschaden" loading="lazy"
+                 onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg,var(--ink-700),var(--ink-600))';" />
+            <span class="blog-tag">Rahmenschaden</span>
+          </div>
+          <div class="blog-card-body">
+            <div class="blog-card-meta">
+              <time datetime="2024-11-12">12. Nov. 2024</time>
+              <span class="dot"></span>
+              <span class="read-time">5 Min. Lesezeit</span>
+            </div>
+            <h2>Rahmenschaden am Auto: Ist eine Reparatur noch sinnvoll?</h2>
+            <p>Finde heraus, ob eine Reparatur lohnt oder der Verkauf bei AutoMitSchaden die bessere Option ist.</p>
+            <span class="blog-card-link">
+              Artikel lesen
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </a>
+
+        <a href="blog/totalschaden-naechste-schritte.html" class="blog-card" style="text-decoration:none;">
+          <div class="blog-card-img">
+            <img src="assets/blog/totalschaden.jpg" alt="Auto mit Totalschaden auf der Strasse" loading="lazy"
+                 onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg,var(--ink-700),var(--ink-600))';" />
+            <span class="blog-tag">Totalschaden</span>
+          </div>
+          <div class="blog-card-body">
+            <div class="blog-card-meta">
+              <time datetime="2024-12-03">3. Dez. 2024</time>
+              <span class="dot"></span>
+              <span class="read-time">6 Min. Lesezeit</span>
+            </div>
+            <h2>Totalschaden: Was nun? &#8211; Deine n&auml;chsten Schritte</h2>
+            <p>Erfahre, wie du nach einem Totalschaden schnell und einfach das Beste aus deinem Fahrzeug machst.</p>
+            <span class="blog-card-link">
+              Artikel lesen
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </a>
+
+        <a href="blog/motorschaden-auto-wertvoll.html" class="blog-card" style="text-decoration:none;">
+          <div class="blog-card-img">
+            <img src="assets/blog/motorschaden.jpg" alt="Mann inspiziert Motorschaden am Auto" loading="lazy"
+                 onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg,var(--ink-700),var(--ink-600))';" />
+            <span class="blog-tag">Motorschaden</span>
+          </div>
+          <div class="blog-card-body">
+            <div class="blog-card-meta">
+              <time datetime="2025-01-15">15. Jan. 2025</time>
+              <span class="dot"></span>
+              <span class="read-time">7 Min. Lesezeit</span>
+            </div>
+            <h2>Warum dein Auto trotz Motorschaden wertvoll bleibt</h2>
+            <p>Auch mit einem defekten Motor kann dein Fahrzeug noch einen beachtlichen Wert haben!</p>
+            <span class="blog-card-link">
+              Artikel lesen
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="foot-bot">
+        <span>&#169; 2026 AutoMitSchaden &middot; Ali El-Toufaili &middot; Alle Rechte vorbehalten</span>
+        <span>
+          <a href="impressum.html" style="margin-right:16px;">Impressum</a>
+          <a href="datenschutz.html">Datenschutzerkl&auml;rung</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
