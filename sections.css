@@ -82,14 +82,14 @@
 .float-tag .tt b { display: block; color: var(--paper); font-size: 13.5px; font-weight: 700; }
 /* Both tags float above the form card — base position included in keyframe so animation never overrides it */
 .float-a { top: 0; left: 14px; animation: floatA 6s var(--ease) infinite; }
-.float-b { top: 0; right: 14px; animation: floatB 7s var(--ease) infinite .6s; }
+.float-b { bottom: 0; right: 14px; animation: floatB 7s var(--ease) infinite .6s; }
 @keyframes floatA {
   0%,100% { transform: translateY(calc(-100% - 18px)); }
   50%     { transform: translateY(calc(-100% - 28px)); }
 }
 @keyframes floatB {
-  0%,100% { transform: translateY(calc(-100% - 18px)); }
-  50%     { transform: translateY(calc(-100% - 28px)); }
+  0%,100% { transform: translateY(calc(100% + 18px)); }
+  50%     { transform: translateY(calc(100% + 28px)); }
 }
 
 /* logos / trust marquee */
