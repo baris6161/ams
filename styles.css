@@ -201,3 +201,24 @@ section { position: relative; }
   position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: .03; mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
+
+/* ---- Hero heading gradient shift ---- */
+@keyframes hero-gradient {
+  0%,100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+/* ---- Button shimmer sweep ---- */
+@keyframes btn-shine {
+  0%    { left: -80%; opacity: 0; }
+  30%   { opacity: 1; }
+  60%,100% { left: 130%; opacity: 0; }
+}
+
+/* ---- Floating contact pulse ring ---- */
+@keyframes contact-pulse {
+  0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(78,161,255,.5); }
+  70%  { transform: scale(1.04); box-shadow: 0 0 0 12px rgba(78,161,255,0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(78,161,255,0); }
+}
+

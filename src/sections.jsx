@@ -2,7 +2,7 @@
    Sections: Nav, Hero, Process, Showcase, Benefits,
    Testimonials, Stats, FAQ, FinalCTA, Footer
    ============================================================ */
-const { useEffect: uEffect, useState: uState } = React;
+const { useEffect: uEffect, useState: uState, useRef: uRef, useCallback: uCB } = React;
 
 function Stars({ n = 5, size = 15 }) {
   return h("span", { className: "stars" },
@@ -71,9 +71,15 @@ function Nav() {
 
 function Hero() {
   const hlEm = window.__amsHeadline || "mit oder ohne Schaden.";
-  return h("header", { className: "hero", id: "top" },
+  const [spot, setSpot] = uState({ x: 60, y: 40 });
+  const onMove = uCB((e) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    setSpot({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
+  }, []);
+  return h("header", { className: "hero", id: "top", onMouseMove: onMove },
     h("div", { className: "hero-stage" }),
     h("div", { className: "hero-grid" }),
+    h("div", { className: "hero-spotlight", style: { background: "radial-gradient(520px circle at " + spot.x + "% " + spot.y + "%, rgba(78,161,255,0.13), transparent 65%)" } }),
     /* Animierte Glow-Orbs */
     h("div", { className: "hero-orb", style: { width: "600px", height: "600px", right: "-8%", top: "-20%", background: "radial-gradient(circle, rgba(78,161,255,.14), transparent 70%)", animation: "orbPulse 9s ease infinite" } }),
     h("div", { className: "hero-orb", style: { width: "380px", height: "380px", left: "3%", bottom: "5%", background: "radial-gradient(circle, rgba(43,111,214,.1), transparent 70%)", animation: "orbPulse 12s ease infinite 2.5s" } }),
@@ -166,10 +172,40 @@ function Benefits() {
 }
 
 function Stats() {
-  const S = [["< 24 h", "Kontaktaufnahme"], ["2.800+", "angekaufte Fahrzeuge"], ["4,9/5", "Kundenbewertung"], ["100 %", "bundesweite Abholung"]];
+  const ref = uRef(null);
+  const [prog, setProg] = uState(0);
+  const done = uRef(false);
+  uEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting || done.current) return;
+      done.current = true;
+      io.disconnect();
+      const dur = 2400, t0 = performance.now();
+      const tick = (now) => {
+        const p = Math.min((now - t0) / dur, 1);
+        setProg(1 - Math.pow(1 - p, 3));
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }, { threshold: 0.4 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const fmt = (v) => Math.round(v * 2800).toLocaleString("de-DE") + "+";
+  const fmtR = (v) => (v * 4.9).toFixed(1).replace(".", ",") + "/5";
+  const fmtP = (v) => Math.round(v * 100) + " %";
+  const active = prog > 0;
+  const S = [
+    ["< 24 h", "Kontaktaufnahme"],
+    [active ? fmt(prog) : "2.800+", "angekaufte Fahrzeuge"],
+    [active ? fmtR(prog) : "4,9/5", "Kundenbewertung"],
+    [active ? fmtP(prog) : "100 %", "bundesweite Abholung"]
+  ];
   return h("section", { className: "sec", style: { paddingTop: 0, paddingBottom: 0 } },
     h("div", { className: "container" },
-      h("div", { className: "stats", "data-reveal": true },
+      h("div", { className: "stats", "data-reveal": true, ref },
         S.map(([v, l], i) => h("div", { className: "stat", key: i }, h("div", { className: "sv" }, v), h("div", { className: "sl" }, l))))));
 }
 
