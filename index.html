@@ -85,6 +85,12 @@
   // Scroll reveal
   const _revealed = new WeakSet();
   let _io;
+  // Trigger word-spans inside .anim-word that live within a container
+  // (IntersectionObserver can't detect them directly because overflow:hidden
+  //  clips their translated-110% position, so isIntersecting is always false)
+  function _triggerWords(container) {
+    container.querySelectorAll(".anim-word > [data-reveal]:not(.in)").forEach((w) => w.classList.add("in"));
+  }
   function initReveal() {
     if (!("IntersectionObserver" in window)) {
       document.querySelectorAll("[data-reveal]").forEach((el) => el.classList.add("in"));
@@ -92,10 +98,18 @@
     }
     if (!_io) {
       _io = new IntersectionObserver((entries) => {
-        entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); _io.unobserve(e.target); } });
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("in");
+            _triggerWords(e.target);
+            _io.unobserve(e.target);
+          }
+        });
       }, { threshold: 0.06, rootMargin: "0px 0px -4% 0px" });
     }
     document.querySelectorAll("[data-reveal]").forEach((el) => {
+      // Skip word spans inside .anim-word — they are triggered by their parent container
+      if (el.closest(".anim-word")) return;
       if (!_revealed.has(el)) { _revealed.add(el); _io.observe(el); }
     });
   }
@@ -104,14 +118,31 @@
   setTimeout(initReveal, 400);
   const _mo = new MutationObserver(() => { clearTimeout(window.__rv); window.__rv = setTimeout(initReveal, 40); });
   _mo.observe(document.getElementById("root"), { childList: true, subtree: true });
-  // Safety net: only for elements already visible in current viewport (not below fold)
+  // Safety net: catch any containers still hidden after 1.5 s
   setTimeout(() => {
     const vH = window.innerHeight;
     document.querySelectorAll("[data-reveal]:not(.in)").forEach((el) => {
+      if (el.closest(".anim-word")) return;
       const r = el.getBoundingClientRect();
-      if (r.top < vH * 0.95 && r.bottom > 0) el.classList.add("in");
+      if (r.top < vH * 0.95 && r.bottom > 0) {
+        el.classList.add("in");
+        _triggerWords(el);
+      }
     });
-  }, 5000);
+  }, 1500);
+
+  // Scroll-end safety net: after fast scrolls the IntersectionObserver can miss
+  // elements — re-check 200 ms after the user stops scrolling
+  let _scrollSafe;
+  function _scrollCheck() {
+    const vH = window.innerHeight;
+    document.querySelectorAll("[data-reveal]:not(.in)").forEach((el) => {
+      if (el.closest(".anim-word")) return;
+      const r = el.getBoundingClientRect();
+      if (r.top < vH * 0.95 && r.bottom > 0) { el.classList.add("in"); _triggerWords(el); }
+    });
+  }
+  window.addEventListener("scroll", () => { clearTimeout(_scrollSafe); _scrollSafe = setTimeout(_scrollCheck, 200); }, { passive: true });
 
   // Parallax glow on hero grid
   window.addEventListener("scroll", () => {
