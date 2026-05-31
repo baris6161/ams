@@ -104,8 +104,14 @@
   setTimeout(initReveal, 400);
   const _mo = new MutationObserver(() => { clearTimeout(window.__rv); window.__rv = setTimeout(initReveal, 40); });
   _mo.observe(document.getElementById("root"), { childList: true, subtree: true });
-  // Safety net
-  setTimeout(() => document.querySelectorAll("[data-reveal]:not(.in)").forEach((el) => el.classList.add("in")), 1800);
+  // Safety net: only for elements already visible in current viewport (not below fold)
+  setTimeout(() => {
+    const vH = window.innerHeight;
+    document.querySelectorAll("[data-reveal]:not(.in)").forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < vH * 0.95 && r.bottom > 0) el.classList.add("in");
+    });
+  }, 5000);
 
   // Parallax glow on hero grid
   window.addEventListener("scroll", () => {
