@@ -109,13 +109,15 @@ function ValuationForm() {
   const steps = [
     { t: "Fahrzeugdaten", s: "Marke, Modell und Eckdaten Ihres Fahrzeugs." },
     { t: "Schaden & Zustand", s: "Was liegt vor? Mehrfachauswahl möglich." },
+    { t: "Fahrzeugdetails", s: "Fahrbereitschaft, TÜV und weitere Angaben." },
     { t: "Bilder hochladen", s: "Optional — beschleunigt Ihr Angebot deutlich." },
     { t: "Kontaktdaten", s: "Wohin dürfen wir Ihr Angebot senden?" },
   ];
 
   const valid = useMemo(() => [
     d.brand && d.model && d.month && d.year && d.km,
-    d.damages.length > 0 && d.drivable && d.tuev,
+    d.damages.length > 0,
+    d.drivable && d.tuev,
     true,
     d.name.trim() && /\d{3}/.test(d.phone) && /@/.test(d.email) && /^\d{5}$/.test(d.plz),
   ], [d]);
@@ -124,11 +126,11 @@ function ValuationForm() {
   const go = (n) => { setDir(n > step ? "fwd" : "back"); setStep(n); setTried(false); setShaking(false); };
   const next = () => {
     if (!valid[step]) { setTried(true); shake(); return; }
-    if (step < 3) go(step + 1);
+    if (step < 4) go(step + 1);
   };
 
   const submit = () => {
-    if (!valid[3]) { setTried(true); shake(); return; }
+    if (!valid[4]) { setTried(true); shake(); return; }
     setTried(false);
     setSending(true);
     const dmgText = d.damages.includes("kein")
@@ -199,7 +201,7 @@ function ValuationForm() {
     h("div", { className: "vform-glow" }),
     h("div", { className: "vform-head" },
       h("div", { className: "vform-meta" },
-        h("span", { className: "vform-step-label" }, "Schritt ", step + 1, " von 4 — ", h("span", { className: "vform-step-name" }, cur.t)),
+        h("span", { className: "vform-step-label" }, "Schritt ", step + 1, " von 5 — ", h("span", { className: "vform-step-name" }, cur.t)),
         h("span", { className: "vform-secure" }, h(Icons.shield, { size: 14 }), "SSL-verschlüsselt")),
       h("div", { className: "vbar" },
         steps.map((_, i) => h("div", { key: i, className: "vbar-seg" + (i < step ? " done" : i === step ? " active" : "") }, h("i")))),
@@ -217,15 +219,16 @@ function ValuationForm() {
           h("div", { className: "vgrid two" },
             h(Field, { label: "Marke", req: true, errorMsg: tried && !d.brand ? "Pflichtfeld" : null },
               h(Select, { value: d.brand, onChange: setBrand, placeholder: "Marke wählen", options: BRANDS, error: tried && !d.brand })),
-            h(Field, { label: "Modell", req: true, errorMsg: tried && d.brand && !d.model ? "Pflichtfeld" : null },
-              h(Select, {
-                value: d.model,
-                onChange: (v) => set("model", v),
-                placeholder: d.brand ? "Modell wählen" : "Erst Marke wählen",
-                options: modelOptions,
-                disabled: !d.brand,
-                error: tried && d.brand && !d.model
-              }))),
+            h(Field, { label: "Modell", req: true, errorMsg: tried && !d.model ? (!d.brand ? "Zuerst Marke auswählen" : "Pflichtfeld") : null },
+              h("div", { title: !d.brand ? "Zuerst die Marke auswählen" : undefined, style: !d.brand ? { cursor: "not-allowed" } : {} },
+                h(Select, {
+                  value: d.model,
+                  onChange: (v) => set("model", v),
+                  placeholder: d.brand ? "Modell wählen" : "Erst Marke wählen",
+                  options: modelOptions,
+                  disabled: !d.brand,
+                  error: tried && d.brand && !d.model
+                })))),
           h("div", { className: "vgrid two", style: { marginTop: 14 } },
             h(Field, { label: "Kilometerstand", req: true, errorMsg: tried && !d.km ? "Pflichtfeld" : null },
               h("div", { className: "ctl" + (tried && !d.km ? " ctl-error" : "") },
@@ -242,38 +245,40 @@ function ValuationForm() {
               h(Select, { value: d.year, onChange: (v) => set("year", v), placeholder: "Jahr", options: YEARS, error: tried && !d.year })))),
 
         step === 1 && h(React.Fragment, null,
-          h("div", { className: tried && d.damages.length === 0 ? "chips-error-wrap" : "" },
-            h("div", { className: "chips" },
-              DAMAGES.map((dm) => h("button", { key: dm.id, className: "chip" + (d.damages.includes(dm.id) ? " on" : ""), onClick: () => toggleDmg(dm.id) },
-                h("span", { className: "box" }, h(Icons.check, { size: 13, sw: 2.4 })),
-                h("span", { className: "ctext" }, h("b", null, dm.label), h("span", null, dm.hint))))),
-            tried && d.damages.length === 0 && h("div", { className: "chips-error-msg" }, "Bitte einen Schaden oder „Kein Schaden“ wählen")),
-          h("div", { style: { marginTop: 16 } },
-            h("div", { className: "qrow" },
-              h("span", null, "Fahrbereit?"),
-              h("div", { style: { display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 } },
-                h("div", { className: "seg acc" + (tried && !d.drivable ? " seg-error-wrap" : "") },
-                  ["Ja", "Nein"].map((o) => h("button", { key: o, className: d.drivable === o ? "on" : "", onClick: () => set("drivable", o) }, o))),
-                tried && !d.drivable && h("span", { style: { fontSize: 11, color: "#d94f4f", fontWeight: 600 } }, "Pflichtfeld"))),
-            h("div", { className: "qrow" },
-              h("span", null, "TÜV vorhanden?"),
-              h("div", { style: { display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 } },
-                h("div", { className: "seg acc" + (tried && !d.tuev ? " seg-error-wrap" : "") },
-                  ["Ja", "Nein"].map((o) => h("button", { key: o, className: d.tuev === o ? "on" : "", onClick: () => set("tuev", o) }, o))),
-                tried && !d.tuev && h("span", { style: { fontSize: 11, color: "#d94f4f", fontWeight: 600 } }, "Pflichtfeld"))),
-            h("div", { className: "qrow" }, h("span", null, "Leasing / finanziert?"),
-              h("div", { className: "seg" }, ["Nein", "Leasing", "Finanziert"].map((o) => h("button", { key: o, className: d.finance === o ? "on" : "", onClick: () => set("finance", o) }, o)))),
-            h("div", { className: "qrow" }, h("span", null, "Anzahl Vorbesitzer"),
-              h("div", { className: "stepper" },
-                h("button", { onClick: () => set("owners", Math.max(1, d.owners - 1)) }, h(Icons.chevron, { size: 14, style: { transform: "rotate(180deg)" } })),
-                h("b", null, d.owners >= 6 ? "6+" : d.owners),
-                h("button", { onClick: () => set("owners", Math.min(6, d.owners + 1)) }, h(Icons.chevron, { size: 14 })))))),
+          h(“div”, { className: tried && d.damages.length === 0 ? “chips-error-wrap” : “” },
+            h(“div”, { className: “chips” },
+              DAMAGES.map((dm) => h(“button”, { key: dm.id, className: “chip” + (d.damages.includes(dm.id) ? “ on” : “”), onClick: () => toggleDmg(dm.id) },
+                h(“span”, { className: “box” }, h(Icons.check, { size: 13, sw: 2.4 })),
+                h(“span”, { className: “ctext” }, h(“b”, null, dm.label), h(“span”, null, dm.hint))))),
+            tried && d.damages.length === 0 && h(“div”, { className: “chips-error-msg” }, “Bitte einen Schaden oder „Kein Schaden” wählen”))),
 
-        step === 2 && h("div", { className: "drops" },
-          h(Dropzone, { data: d, kind: "photos", label: "Fahrzeugbilder", sub: "Front, Heck, Seite, Innenraum — Dateien ablegen oder klicken", onAdd: addFiles, onRemove: rmFile }),
-          h(Dropzone, { data: d, kind: "damagePhotos", label: "Schadensbilder", sub: "Nahaufnahmen der betroffenen Stellen", onAdd: addFiles, onRemove: rmFile })),
+        step === 2 && h(React.Fragment, null,
+          h(“div”, null,
+            h(“div”, { className: “qrow” },
+              h(“span”, null, “Fahrbereit?”),
+              h(“div”, { style: { display: “flex”, flexDirection: “column”, alignItems: “flex-end”, gap: 4 } },
+                h(“div”, { className: “seg acc” + (tried && !d.drivable ? “ seg-error-wrap” : “”) },
+                  [“Ja”, “Nein”].map((o) => h(“button”, { key: o, className: d.drivable === o ? “on” : “”, onClick: () => set(“drivable”, o) }, o))),
+                tried && !d.drivable && h(“span”, { style: { fontSize: 11, color: “#d94f4f”, fontWeight: 600 } }, “Pflichtfeld”))),
+            h(“div”, { className: “qrow” },
+              h(“span”, null, “TÜV vorhanden?”),
+              h(“div”, { style: { display: “flex”, flexDirection: “column”, alignItems: “flex-end”, gap: 4 } },
+                h(“div”, { className: “seg acc” + (tried && !d.tuev ? “ seg-error-wrap” : “”) },
+                  [“Ja”, “Nein”].map((o) => h(“button”, { key: o, className: d.tuev === o ? “on” : “”, onClick: () => set(“tuev”, o) }, o))),
+                tried && !d.tuev && h(“span”, { style: { fontSize: 11, color: “#d94f4f”, fontWeight: 600 } }, “Pflichtfeld”))),
+            h(“div”, { className: “qrow” }, h(“span”, null, “Leasing / finanziert?”),
+              h(“div”, { className: “seg” }, [“Nein”, “Leasing”, “Finanziert”].map((o) => h(“button”, { key: o, className: d.finance === o ? “on” : “”, onClick: () => set(“finance”, o) }, o)))),
+            h(“div”, { className: “qrow” }, h(“span”, null, “Anzahl Vorbesitzer”),
+              h(“div”, { className: “stepper” },
+                h(“button”, { onClick: () => set(“owners”, Math.max(1, d.owners - 1)) }, h(Icons.chevron, { size: 14, style: { transform: “rotate(180deg)” } })),
+                h(“b”, null, d.owners >= 6 ? “6+” : d.owners),
+                h(“button”, { onClick: () => set(“owners”, Math.min(6, d.owners + 1)) }, h(Icons.chevron, { size: 14 })))))),
 
-        step === 3 && h(React.Fragment, null,
+        step === 3 && h(“div”, { className: “drops” },
+          h(Dropzone, { data: d, kind: “photos”, label: “Fahrzeugbilder”, sub: “Front, Heck, Seite, Innenraum — Dateien ablegen oder klicken”, onAdd: addFiles, onRemove: rmFile }),
+          h(Dropzone, { data: d, kind: “damagePhotos”, label: “Schadensbilder”, sub: “Nahaufnahmen der betroffenen Stellen”, onAdd: addFiles, onRemove: rmFile })),
+
+        step === 4 && h(React.Fragment, null,
           h("div", { className: "vgrid two" },
             h(Field, { label: "Name", req: true, errorMsg: tried && !d.name.trim() ? "Bitte Namen eingeben" : null },
               h("div", { className: "ctl" + (tried && !d.name.trim() ? " ctl-error" : "") },
@@ -296,17 +301,17 @@ function ValuationForm() {
       step > 0 && h("button", { className: "vbtn vbtn-back", onClick: () => go(step - 1) },
         h(Icons.chevron, { size: 16, style: { transform: "rotate(180deg)" } }), "Zurück"),
       h("button", {
-        className: "vbtn " + (step === 3 ? "vbtn-submit" : "vbtn-next") + (shaking ? " vbtn-shake" : ""),
+        className: "vbtn " + (step === 4 ? "vbtn-submit" : "vbtn-next") + (shaking ? " vbtn-shake" : ""),
         disabled: sending,
-        onClick: step === 3 ? submit : next,
+        onClick: step === 4 ? submit : next,
         style: sending ? { opacity: 0.7 } : {}
       },
         sending
           ? h(React.Fragment, null, h("span", { style: { display: "inline-block", animation: "spin 0.8s linear infinite" } }, "↻"), "Wird gesendet…")
-          : step === 3 ? "Bewertung anfordern"
-          : step === 2 ? "Weiter (oder überspringen)"
+          : step === 4 ? "Bewertung anfordern"
+          : step === 3 ? "Weiter (oder überspringen)"
           : "Weiter",
-        !sending && step !== 3 && h(Icons.chevron, { size: 17 }))));
+        !sending && step !== 4 && h(Icons.chevron, { size: 17 }))));
 }
 
 window.ValuationForm = ValuationForm;

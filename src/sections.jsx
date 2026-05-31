@@ -132,8 +132,8 @@ function Showcase() {
     h("div", { className: "container showcase" },
       h("div", { className: "showcase-img-wrap", "data-reveal": true },
         h("img", {
-          src: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=800&q=80",
-          alt: "Fahrzeugankauf — AutoMitSchaden",
+          src: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=800&q=85",
+          alt: "Professioneller Fahrzeugankauf — AutoMitSchaden",
           style: { width: "100%", height: "100%", objectFit: "cover", borderRadius: "var(--radius)", display: "block", aspectRatio: "4/3" },
           loading: "lazy",
           onError: (e) => { e.target.style.display = "none"; e.target.parentElement.classList.add("ph"); e.target.parentElement.setAttribute("data-label", "Fahrzeug-Aufnahme"); }
