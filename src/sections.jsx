@@ -54,7 +54,16 @@ function Nav() {
         h("a", { href: "blog.html", style: { color: "var(--accent-2)" } }, "Blog")),
       h("div", { className: "nav-cta" },
         h("span", { className: "nav-phone" }, h(Icons.phone, { size: 16 }), "+49 177 8979287"),
-        h("a", { href: "#top", onClick: jump("top"), className: "btn btn-primary", style: { padding: "11px 20px", fontSize: 14 } }, "Fahrzeug bewerten"))));
+        h("a", { href: "#bewertungsformular", className: "btn btn-primary", style: { padding: "11px 20px", fontSize: 14 },
+        onClick: (e) => {
+          e.preventDefault();
+          const isMobile = window.innerWidth <= 980;
+          const target = isMobile
+            ? document.getElementById("bewertungsformular")
+            : document.getElementById("top");
+          if (target) window.scrollTo({ top: target.offsetTop - (isMobile ? 84 : 0), behavior: "smooth" });
+        }
+      }, "Fahrzeug bewerten"))));
 }
 
 function Hero() {
@@ -71,13 +80,13 @@ function Hero() {
         h("h1", null, "Ihr Auto verkaufen — ", h("em", null, hlEm)),
         h("p", { className: "hero-lead" }, "Ob Unfallwagen, Motorschaden oder gepflegter Gebrauchter — bewerten Sie Ihr Fahrzeug kostenlos. Sie erhalten schnellstmöglich Ihr Angebot, prüfen es in Ruhe und bei Zusage holt der Käufer Ihr Auto kostenlos ab."),
         h("div", { className: "hero-points" },
-          ["Kostenlose Abholung", "Angebot in kürzester Zeit", "Keine Verhandlung"].map((t) =>
+          ["Kostenlose Abholung", "Angebot in kürzester Zeit", "Keine Verhandlung", "Zahlung bei Übergabe"].map((t) =>
             h("span", { className: "hero-point", key: t }, h(Icons.check, { size: 17, sw: 2.2 }), t))),
         h("div", { className: "hero-actions" },
           h("div", { className: "hero-rating" },
             h(Stars, null),
             h("small", null, h("b", null, "4,9 / 5 · 2.800+ Verkäufe"), "Geprüfte Kundenbewertungen")))),
-      h("div", { className: "hero-form-wrap", "data-reveal": true, style: { "--reveal-delay": "140ms" } },
+      h("div", { className: "hero-form-wrap", id: "bewertungsformular", "data-reveal": true, style: { "--reveal-delay": "140ms" } },
         h("div", { className: "float-tag float-a" },
           h("div", { className: "ic" }, h(Icons.euro, { size: 17 })),
           h("div", { className: "tt" }, h("b", null, "Festpreis-Garantie"), "kein Abzug bei Übergabe")),

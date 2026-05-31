@@ -60,7 +60,7 @@
 }
 .hero h1 em { font-style: normal; background: linear-gradient(120deg, var(--accent-2), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .hero-lead { font-size: clamp(15.5px, 1.35vw, 18px); color: var(--paper-dim); max-width: 490px; line-height: 1.65; margin-bottom: 30px; text-wrap: pretty; }
-.hero-points { display: flex; flex-wrap: wrap; gap: 10px 20px; margin-bottom: 34px; }
+.hero-points { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; margin-bottom: 34px; }
 .hero-point { display: inline-flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 500; color: var(--paper); }
 .hero-point svg { color: var(--accent-2); flex: none; }
 .hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
