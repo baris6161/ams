@@ -4,6 +4,13 @@
    ============================================================ */
 const { useEffect: uEffect, useState: uState, useRef: uRef, useCallback: uCB } = React;
 
+function jumpToForm(e) {
+  e && e.preventDefault();
+  const isMobile = window.innerWidth <= 980;
+  const target = isMobile ? document.getElementById("bewertungsformular") : document.getElementById("top");
+  if (target) window.scrollTo({ top: target.offsetTop - (isMobile ? 84 : 0), behavior: "smooth" });
+}
+
 function Stars({ n = 5, size = 15 }) {
   return h("span", { className: "stars" },
     Array.from({ length: n }, (_, i) =>
@@ -52,19 +59,10 @@ function Nav() {
         h("a", { href: "blog.html", style: { color: "var(--accent-2)" } }, "Blog")),
       h("div", { className: "nav-cta" },
         h("span", { className: "nav-phone" }, h(Icons.phone, { size: 16 }), "+49 177 8979287"),
-        h("a", { href: "https://wa.me/4917789792870", className: "nav-wa-mobile", target: "_blank", rel: "noopener", "aria-label": "WhatsApp" },
+        h("a", { href: "https://wa.me/491778979287", className: "nav-wa-mobile", target: "_blank", rel: "noopener", "aria-label": "WhatsApp" },
           h("svg", { width: 20, height: 20, viewBox: "0 0 24 24", fill: "currentColor" },
             h("path", { d: "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" }))),
-        h("a", { href: "#bewertungsformular", className: "btn btn-primary", style: { padding: "11px 20px", fontSize: 14 },
-        onClick: (e) => {
-          e.preventDefault();
-          const isMobile = window.innerWidth <= 980;
-          const target = isMobile
-            ? document.getElementById("bewertungsformular")
-            : document.getElementById("top");
-          if (target) window.scrollTo({ top: target.offsetTop - (isMobile ? 84 : 0), behavior: "smooth" });
-        }
-      }, "Fahrzeug bewerten"))));
+        h("a", { href: "#bewertungsformular", className: "btn btn-primary", style: { padding: "11px 20px", fontSize: 14 }, onClick: jumpToForm }, "Fahrzeug bewerten"))));
 }
 
 function Hero() {
@@ -234,7 +232,7 @@ function FAQ() {
         h("span", { className: "eyebrow" }, "Häufige Fragen"),
         h(AnimHeading, { text: "Alles, was Sie wissen müssen.", tag: "h2", className: "sec-head", baseDelay: 80 }),
         h("p", { style: { color: "var(--paper-dim)", fontSize: 15.5, lineHeight: 1.6 } }, "Noch Fragen offen? Unser Team ist werktags von 8–20 Uhr für Sie erreichbar."),
-        h("a", { href: "#top", className: "btn btn-ghost", style: { marginTop: 22 }, onClick: (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); } }, "Jetzt Fahrzeug bewerten")),
+        h("a", { href: "#bewertungsformular", className: "btn btn-ghost", style: { marginTop: 22 }, onClick: jumpToForm }, "Jetzt Fahrzeug bewerten")),
       h("div", { className: "faq-list", "data-reveal": true },
         FAQS.map((f, i) => h("div", { className: "faq-item" + (open === i ? " open" : ""), key: i },
           h("button", { className: "faq-q", onClick: () => setOpen(open === i ? -1 : i) }, f.q, h("span", { className: "fic" }, h(Icons.plus, { size: 16 }))),
@@ -248,7 +246,7 @@ function FinalCTA() {
         h("span", { className: "eyebrow", style: { justifyContent: "center" } }, "Unverbindlich & kostenlos"),
         h(AnimHeading, { text: "Bereit, Ihr Fahrzeug zu verkaufen?", tag: "h2", baseDelay: 80 }),
         h("p", { "data-reveal": true, style: { "--reveal-delay": "200ms" } }, "Geben Sie Ihre Fahrzeugdaten ein und erhalten Sie schnellstmöglich ein faires Angebot."),
-        h("a", { href: "#top", className: "btn btn-primary", style: { fontSize: 16, padding: "17px 34px" }, onClick: (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); } }, "Fahrzeug jetzt bewerten", h(Icons.chevron, { size: 18 })))));
+        h("a", { href: "#bewertungsformular", className: "btn btn-primary", style: { fontSize: 16, padding: "17px 34px" }, onClick: jumpToForm }, "Fahrzeug jetzt bewerten", h(Icons.chevron, { size: 18 })))));
 }
 
 function Footer() {
@@ -266,12 +264,12 @@ function Footer() {
         h("div", { className: "foot-col", "data-reveal": true, style: { "--reveal-delay": "160ms" } }, h("h5", null, "Unternehmen"),
           [
             { label: "So funktioniert's", href: "#prozess" },
-            { label: "Über uns", href: "#" },
+            { label: "Über uns", href: "impressum.html" },
             { label: "Bewertungen", href: "#stimmen" },
           ].map((x) => h("a", { key: x.label, href: x.href }, x.label))),
         h("div", { className: "foot-col", "data-reveal": true, style: { "--reveal-delay": "240ms" } }, h("h5", null, "Kontakt"),
           h("a", { href: "tel:+491778979287", className: "foot-contact-link" }, h(Icons.phone, { size: 14 }), "+49 177 8979287"),
-          h("a", { href: "https://wa.me/4917789792870", className: "foot-contact-link", target: "_blank", rel: "noopener" },
+          h("a", { href: "https://wa.me/491778979287", className: "foot-contact-link", target: "_blank", rel: "noopener" },
             h("svg", { width: 14, height: 14, viewBox: "0 0 24 24", fill: "currentColor" },
               h("path", { d: "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" })),
             "WhatsApp"),
@@ -293,7 +291,7 @@ function FloatingContact() {
     open && h("div", { className: "float-contact-menu" },
       h("a", { href: "tel:+491778979287", className: "float-contact-item", onClick: () => setOpen(false) },
         h(Icons.phone, { size: 18 }), h("span", null, "+49 177 8979287")),
-      h("a", { href: "https://wa.me/4917789792870", className: "float-contact-item float-contact-wa", target: "_blank", rel: "noopener", onClick: () => setOpen(false) },
+      h("a", { href: "https://wa.me/491778979287", className: "float-contact-item float-contact-wa", target: "_blank", rel: "noopener", onClick: () => setOpen(false) },
         h("svg", { width: 18, height: 18, viewBox: "0 0 24 24", fill: "currentColor" },
           h("path", { d: "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" })),
         h("span", null, "WhatsApp")),
