@@ -318,3 +318,52 @@
 .float-contact-btn { animation: contact-pulse 3s ease-out infinite; }
 .float-contact-btn:hover { animation: none; }
 
+/* ---------------- Premium section entrances ---------------- */
+/* Lead paragraph: subtle blur dissolve */
+.hero-lead[data-reveal] {
+  filter: blur(4px);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 1.2s ease !important;
+}
+.hero-lead[data-reveal].in { filter: blur(0) !important; }
+
+/* Hero points: staggered from left */
+.hero-point[data-reveal] {
+  transform: translateX(-14px) translateY(0) !important;
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.hero-point[data-reveal].in { transform: none !important; }
+
+/* Eyebrow labels: slide in from left */
+.eyebrow[data-reveal] {
+  transform: translateX(-18px) !important;
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.eyebrow[data-reveal].in { transform: none !important; }
+
+/* Process cards: rise with perspective tilt */
+.proc-card[data-reveal] {
+  transform: translateY(36px) rotateX(4deg) !important;
+  transform-origin: top center;
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.proc-card[data-reveal].in { transform: none !important; }
+
+/* Benefit cards: subtle scale-up */
+.bcard[data-reveal] {
+  transform: translateY(20px) scale(0.97) !important;
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.bcard[data-reveal].in { transform: none !important; }
+
+/* Testimonial cards: gentle rise */
+.tcard[data-reveal] {
+  transform: translateY(24px) !important;
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.tcard[data-reveal].in { transform: none !important; }
+

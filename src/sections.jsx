@@ -19,15 +19,13 @@ function AnimHeading({ text, tag, className, baseDelay }) {
   const words = text.split(" ");
   return h(t, { className: cls },
     words.map((word, i) =>
-      h("span", {
-        key: i,
-        "data-reveal": true,
-        style: {
-          display: "inline-block",
-          marginRight: "0.28em",
-          "--reveal-delay": (delay + i * 70) + "ms"
-        }
-      }, word)));
+      h(React.Fragment, { key: i },
+        h("span", { className: "anim-word" },
+          h("span", {
+            "data-reveal": true,
+            style: { "--reveal-delay": (delay + i * 75) + "ms" }
+          }, word)),
+        i < words.length - 1 ? " " : null)));
 }
 
 function Nav() {
@@ -86,7 +84,14 @@ function Hero() {
     h("div", { className: "container hero-in" },
       h("div", { "data-reveal": true },
         h("div", { className: "hero-badge" }, h("span", { className: "dot" }), "Spezialist für Unfall- & Schadenfahrzeuge"),
-        h("h1", null, "Ihr Auto verkaufen — ", h("em", null, hlEm)),
+        h("h1", null,
+        ...["Ihr", "Auto", "verkaufen", "—"].map((w, i) =>
+          h(React.Fragment, { key: "w" + i },
+            h("span", { className: "anim-word" },
+              h("span", { "data-reveal": true, style: { "--reveal-delay": (240 + i * 85) + "ms" } }, w)),
+            " ")),
+        h("span", { className: "anim-word" },
+          h("em", { "data-reveal": true, style: { display: "inline-block", "--reveal-delay": "590ms" } }, hlEm))),
         h("p", { className: "hero-lead" }, "Ob Unfallwagen, Motorschaden oder gepflegter Gebrauchter — bewerten Sie Ihr Fahrzeug kostenlos. Sie erhalten schnellstmöglich Ihr Angebot, prüfen es in Ruhe und bei Zusage holt der Käufer Ihr Auto kostenlos ab."),
         h("div", { className: "hero-points" },
           ["Kostenlose Abholung", "Angebot in kürzester Zeit", "Keine Verhandlung", "Zahlung bei Übergabe"].map((t) =>
