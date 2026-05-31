@@ -7,9 +7,11 @@ const MONTHS = ["Januar","Februar","März","April","Mai","Juni","Juli","August",
 const YEARS = Array.from({ length: 86 }, (_, i) => String(2025 - i));
 
 // EmailJS config — set your credentials here
-const EJS_SERVICE  = "YOUR_SERVICE_ID";
-const EJS_TEMPLATE = "YOUR_TEMPLATE_ID";
-const EJS_KEY      = "YOUR_PUBLIC_KEY";
+const EJS_SERVICE        = "YOUR_SERVICE_ID";
+const EJS_TEMPLATE       = "YOUR_TEMPLATE_ID";        // Business-Mail → info@automitschaden.de
+const EJS_TEMPLATE_CONFIRM = "YOUR_CONFIRM_TEMPLATE_ID"; // Bestätigung → Nutzer-E-Mail
+const EJS_KEY            = "YOUR_PUBLIC_KEY";
+// EmailJS Confirm-Template Felder: to_email, user_name, brand, model, km, year, month, damages, drivable
 
 function fmtKm(v) {
   const n = String(v).replace(/\D/g, "");
@@ -19,14 +21,15 @@ function fmtKm(v) {
 
 function Chev() { return h(Icons.chevron, { size: 18, className: "chev", style: { transform: "rotate(90deg)" } }); }
 
-function Field({ label, req, children }) {
+function Field({ label, req, children, errorMsg }) {
   return h("div", { className: "field" },
     h("label", null, label, req && h("span", { className: "req" }, " *")),
-    children);
+    children,
+    errorMsg && h("div", { className: "field-error-msg" }, errorMsg));
 }
 
-function Select({ value, onChange, placeholder, options, disabled }) {
-  return h("div", { className: "ctl" + (disabled ? " ctl-disabled" : "") },
+function Select({ value, onChange, placeholder, options, disabled, error }) {
+  return h("div", { className: "ctl" + (disabled ? " ctl-disabled" : "") + (error ? " ctl-error" : "") },
     h("select", {
         value,
         onChange: (e) => onChange(e.target.value),
@@ -70,6 +73,8 @@ function ValuationForm() {
   const [dir, setDir] = useState("fwd");
   const [done, setDone] = useState(false);
   const [sending, setSending] = useState(false);
+  const [tried, setTried] = useState(false);
+  const [shaking, setShaking] = useState(false);
   const [d, setD] = useState({
     brand: "", model: "", month: "", year: "", km: "", preisvorstellung: "",
     damages: [], drivable: "", tuev: "", finance: "", owners: 1,
@@ -80,10 +85,16 @@ function ValuationForm() {
 
   const setBrand = (v) => setD((p) => ({ ...p, brand: v, model: "" }));
 
-  const toggleDmg = (id) => setD((p) => ({
-    ...p,
-    damages: p.damages.includes(id) ? p.damages.filter((x) => x !== id) : [...p.damages, id]
-  }));
+  const toggleDmg = (id) => setD((p) => {
+    if (id === "kein") {
+      return { ...p, damages: p.damages.includes("kein") ? [] : ["kein"] };
+    }
+    const without = p.damages.filter((x) => x !== "kein");
+    return {
+      ...p,
+      damages: without.includes(id) ? without.filter((x) => x !== id) : [...without, id]
+    };
+  });
   const addFiles = (kind, n) => setD((p) => ({
     ...p,
     [kind]: [...p[kind], ...Array.from({ length: n }, () => ({ id: Math.random().toString(36).slice(2) }))]
@@ -109,11 +120,20 @@ function ValuationForm() {
     d.name.trim() && /\d{3}/.test(d.phone) && /@/.test(d.email) && /^\d{5}$/.test(d.plz),
   ], [d]);
 
-  const go = (n) => { setDir(n > step ? "fwd" : "back"); setStep(n); };
-  const next = () => { if (step < 3) go(step + 1); };
+  const shake = () => { setShaking(true); setTimeout(() => setShaking(false), 500); };
+  const go = (n) => { setDir(n > step ? "fwd" : "back"); setStep(n); setTried(false); setShaking(false); };
+  const next = () => {
+    if (!valid[step]) { setTried(true); shake(); return; }
+    if (step < 3) go(step + 1);
+  };
 
   const submit = () => {
+    if (!valid[3]) { setTried(true); shake(); return; }
+    setTried(false);
     setSending(true);
+    const dmgText = d.damages.includes("kein")
+      ? "Kein Schaden (gepflegter Gebrauchter)"
+      : d.damages.join(", ") || "Keine Angabe";
     const params = {
       from_name: d.name,
       phone: d.phone,
@@ -125,16 +145,32 @@ function ValuationForm() {
       year: d.year,
       month: d.month,
       preisvorstellung: d.preisvorstellung ? (d.preisvorstellung + " €") : "Keine Angabe",
-      damages: d.damages.join(", ") || "Keine Schäden angegeben",
+      damages: dmgText,
       drivable: d.drivable,
       tuev: d.tuev,
       finance: d.finance || "Nein",
       owners: d.owners >= 6 ? "6+" : String(d.owners),
       to_email: "info@automitschaden.de",
     };
+    const confirmParams = {
+      to_email: d.email,
+      user_name: d.name.split(" ")[0] || d.name,
+      brand: d.brand,
+      model: d.model,
+      km: fmtKm(d.km),
+      year: d.year,
+      month: d.month,
+      damages: dmgText,
+      drivable: d.drivable,
+    };
     const tryEmail = () => {
       if (typeof emailjs !== "undefined" && EJS_SERVICE !== "YOUR_SERVICE_ID") {
-        return emailjs.send(EJS_SERVICE, EJS_TEMPLATE, params, EJS_KEY);
+        return Promise.all([
+          emailjs.send(EJS_SERVICE, EJS_TEMPLATE, params, EJS_KEY),
+          EJS_TEMPLATE_CONFIRM !== "YOUR_CONFIRM_TEMPLATE_ID"
+            ? emailjs.send(EJS_SERVICE, EJS_TEMPLATE_CONFIRM, confirmParams, EJS_KEY)
+            : Promise.resolve(),
+        ]);
       }
       return Promise.resolve();
     };
@@ -155,7 +191,7 @@ function ValuationForm() {
             h("p", { style: { marginBottom: 8 } }, "1. Wir prüfen Ihre Anfrage"),
             h("p", { style: { marginBottom: 8 } }, "2. Sie erhalten unser Angebot per Telefon oder E-Mail"),
             h("p", null, "3. Bei Zusage: kostenlose Abholung & Zahlung bei Übergabe"))),
-        h("button", { className: "vbtn vbtn-next", style: { marginTop: 22 }, onClick: () => { setDone(false); setStep(0); setD({ brand: "", model: "", month: "", year: "", km: "", preisvorstellung: "", damages: [], drivable: "", tuev: "", finance: "", owners: 1, photos: [], damagePhotos: [], name: "", phone: "", email: "", plz: "" }); } }, "Weiteres Fahrzeug bewerten")));
+        h("button", { className: "vbtn vbtn-next", style: { marginTop: 22 }, onClick: () => { setDone(false); setStep(0); setTried(false); setD({ brand: "", model: "", month: "", year: "", km: "", preisvorstellung: "", damages: [], drivable: "", tuev: "", finance: "", owners: 1, photos: [], damagePhotos: [], name: "", phone: "", email: "", plz: "" }); } }, "Weiteres Fahrzeug bewerten")));
   }
 
   const cur = steps[step];
@@ -163,7 +199,7 @@ function ValuationForm() {
     h("div", { className: "vform-glow" }),
     h("div", { className: "vform-head" },
       h("div", { className: "vform-meta" },
-        h("span", { className: "vform-step-label" }, "Schritt ", step + 1, " / 4"),
+        h("span", { className: "vform-step-label" }, "Schritt ", step + 1, " von 4 — ", h("span", { className: "vform-step-name" }, cur.t)),
         h("span", { className: "vform-secure" }, h(Icons.shield, { size: 14 }), "SSL-verschlüsselt")),
       h("div", { className: "vbar" },
         steps.map((_, i) => h("div", { key: i, className: "vbar-seg" + (i < step ? " done" : i === step ? " active" : "") }, h("i")))),
@@ -171,23 +207,28 @@ function ValuationForm() {
       h("div", { className: "vform-sub" }, cur.s)),
 
     h("div", { className: "vform-body" },
+      tried && !valid[step] && h("div", { className: "vform-error-banner" },
+        h("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2.2, strokeLinecap: "round" },
+          h("path", { d: "M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" })),
+        "Bitte alle Pflichtfelder ausfüllen"),
       h("div", { className: "vstep" + (dir === "back" ? " back" : ""), key: step },
 
         step === 0 && h(React.Fragment, null,
           h("div", { className: "vgrid two" },
-            h(Field, { label: "Marke", req: true },
-              h(Select, { value: d.brand, onChange: setBrand, placeholder: "Marke wählen", options: BRANDS })),
-            h(Field, { label: "Modell", req: true },
+            h(Field, { label: "Marke", req: true, errorMsg: tried && !d.brand ? "Pflichtfeld" : null },
+              h(Select, { value: d.brand, onChange: setBrand, placeholder: "Marke wählen", options: BRANDS, error: tried && !d.brand })),
+            h(Field, { label: "Modell", req: true, errorMsg: tried && d.brand && !d.model ? "Pflichtfeld" : null },
               h(Select, {
                 value: d.model,
                 onChange: (v) => set("model", v),
                 placeholder: d.brand ? "Modell wählen" : "Erst Marke wählen",
                 options: modelOptions,
-                disabled: !d.brand
+                disabled: !d.brand,
+                error: tried && d.brand && !d.model
               }))),
           h("div", { className: "vgrid two", style: { marginTop: 14 } },
-            h(Field, { label: "Kilometerstand", req: true },
-              h("div", { className: "ctl" },
+            h(Field, { label: "Kilometerstand", req: true, errorMsg: tried && !d.km ? "Pflichtfeld" : null },
+              h("div", { className: "ctl" + (tried && !d.km ? " ctl-error" : "") },
                 h("input", { inputMode: "numeric", value: fmtKm(d.km), placeholder: "125.000", onChange: (e) => set("km", e.target.value) }),
                 h("span", { className: "suf" }, "km"))),
             h(Field, { label: "Preisvorstellung" },
@@ -195,21 +236,31 @@ function ValuationForm() {
                 h("input", { inputMode: "numeric", value: d.preisvorstellung, placeholder: "Optional", onChange: (e) => set("preisvorstellung", e.target.value.replace(/\D/g, "")) }),
                 h("span", { className: "suf" }, "€")))),
           h("div", { className: "vgrid two", style: { marginTop: 14 } },
-            h(Field, { label: "EZ Monat", req: true },
-              h(Select, { value: d.month, onChange: (v) => set("month", v), placeholder: "Monat", options: MONTHS })),
-            h(Field, { label: "EZ Jahr", req: true },
-              h(Select, { value: d.year, onChange: (v) => set("year", v), placeholder: "Jahr", options: YEARS })))),
+            h(Field, { label: "EZ Monat", req: true, errorMsg: tried && !d.month ? "Pflichtfeld" : null },
+              h(Select, { value: d.month, onChange: (v) => set("month", v), placeholder: "Monat", options: MONTHS, error: tried && !d.month })),
+            h(Field, { label: "EZ Jahr", req: true, errorMsg: tried && !d.year ? "Pflichtfeld" : null },
+              h(Select, { value: d.year, onChange: (v) => set("year", v), placeholder: "Jahr", options: YEARS, error: tried && !d.year })))),
 
         step === 1 && h(React.Fragment, null,
-          h("div", { className: "chips" },
-            DAMAGES.map((dm) => h("button", { key: dm.id, className: "chip" + (d.damages.includes(dm.id) ? " on" : ""), onClick: () => toggleDmg(dm.id) },
-              h("span", { className: "box" }, h(Icons.check, { size: 13, sw: 2.4 })),
-              h("span", { className: "ctext" }, h("b", null, dm.label), h("span", null, dm.hint))))),
+          h("div", { className: tried && d.damages.length === 0 ? "chips-error-wrap" : "" },
+            h("div", { className: "chips" },
+              DAMAGES.map((dm) => h("button", { key: dm.id, className: "chip" + (d.damages.includes(dm.id) ? " on" : ""), onClick: () => toggleDmg(dm.id) },
+                h("span", { className: "box" }, h(Icons.check, { size: 13, sw: 2.4 })),
+                h("span", { className: "ctext" }, h("b", null, dm.label), h("span", null, dm.hint))))),
+            tried && d.damages.length === 0 && h("div", { className: "chips-error-msg" }, "Bitte einen Schaden oder „Kein Schaden“ wählen")),
           h("div", { style: { marginTop: 16 } },
-            h("div", { className: "qrow" }, h("span", null, "Fahrbereit?"),
-              h("div", { className: "seg acc" }, ["Ja", "Nein"].map((o) => h("button", { key: o, className: d.drivable === o ? "on" : "", onClick: () => set("drivable", o) }, o)))),
-            h("div", { className: "qrow" }, h("span", null, "TÜV vorhanden?"),
-              h("div", { className: "seg acc" }, ["Ja", "Nein"].map((o) => h("button", { key: o, className: d.tuev === o ? "on" : "", onClick: () => set("tuev", o) }, o)))),
+            h("div", { className: "qrow" },
+              h("span", null, "Fahrbereit?"),
+              h("div", { style: { display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 } },
+                h("div", { className: "seg acc" + (tried && !d.drivable ? " seg-error-wrap" : "") },
+                  ["Ja", "Nein"].map((o) => h("button", { key: o, className: d.drivable === o ? "on" : "", onClick: () => set("drivable", o) }, o))),
+                tried && !d.drivable && h("span", { style: { fontSize: 11, color: "#d94f4f", fontWeight: 600 } }, "Pflichtfeld"))),
+            h("div", { className: "qrow" },
+              h("span", null, "TÜV vorhanden?"),
+              h("div", { style: { display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 } },
+                h("div", { className: "seg acc" + (tried && !d.tuev ? " seg-error-wrap" : "") },
+                  ["Ja", "Nein"].map((o) => h("button", { key: o, className: d.tuev === o ? "on" : "", onClick: () => set("tuev", o) }, o))),
+                tried && !d.tuev && h("span", { style: { fontSize: 11, color: "#d94f4f", fontWeight: 600 } }, "Pflichtfeld"))),
             h("div", { className: "qrow" }, h("span", null, "Leasing / finanziert?"),
               h("div", { className: "seg" }, ["Nein", "Leasing", "Finanziert"].map((o) => h("button", { key: o, className: d.finance === o ? "on" : "", onClick: () => set("finance", o) }, o)))),
             h("div", { className: "qrow" }, h("span", null, "Anzahl Vorbesitzer"),
@@ -224,23 +275,29 @@ function ValuationForm() {
 
         step === 3 && h(React.Fragment, null,
           h("div", { className: "vgrid two" },
-            h(Field, { label: "Name", req: true },
-              h("div", { className: "ctl" }, h("input", { value: d.name, placeholder: "Max Mustermann", onChange: (e) => set("name", e.target.value) }))),
-            h(Field, { label: "Telefon", req: true },
-              h("div", { className: "ctl" }, h(Icons.phone, { size: 16, className: "pre" }), h("input", { inputMode: "tel", value: d.phone, placeholder: "0151 23456789", onChange: (e) => set("phone", e.target.value) })))),
+            h(Field, { label: "Name", req: true, errorMsg: tried && !d.name.trim() ? "Bitte Namen eingeben" : null },
+              h("div", { className: "ctl" + (tried && !d.name.trim() ? " ctl-error" : "") },
+                h("input", { value: d.name, placeholder: "Max Mustermann", onChange: (e) => set("name", e.target.value) }))),
+            h(Field, { label: "Telefon", req: true, errorMsg: tried && !/\d{3}/.test(d.phone) ? "Bitte Telefonnummer angeben" : null },
+              h("div", { className: "ctl" + (tried && !/\d{3}/.test(d.phone) ? " ctl-error" : "") },
+                h(Icons.phone, { size: 16, className: "pre" }),
+                h("input", { inputMode: "tel", value: d.phone, placeholder: "0151 23456789", onChange: (e) => set("phone", e.target.value) })))),
           h("div", { className: "vgrid two", style: { marginTop: 14 } },
-            h(Field, { label: "E-Mail", req: true },
-              h("div", { className: "ctl" }, h("input", { inputMode: "email", value: d.email, placeholder: "max@email.de", onChange: (e) => set("email", e.target.value) }))),
-            h(Field, { label: "PLZ", req: true },
-              h("div", { className: "ctl" }, h(Icons.pin, { size: 16, className: "pre" }), h("input", { inputMode: "numeric", maxLength: 5, value: d.plz, placeholder: "80331", onChange: (e) => set("plz", e.target.value.replace(/\D/g, "")) })))))
+            h(Field, { label: "E-Mail", req: true, errorMsg: tried && !/@/.test(d.email) ? "Gültige E-Mail erforderlich" : null },
+              h("div", { className: "ctl" + (tried && !/@/.test(d.email) ? " ctl-error" : "") },
+                h("input", { inputMode: "email", value: d.email, placeholder: "max@email.de", onChange: (e) => set("email", e.target.value) }))),
+            h(Field, { label: "PLZ", req: true, errorMsg: tried && !/^\d{5}$/.test(d.plz) ? "5-stellige PLZ erforderlich" : null },
+              h("div", { className: "ctl" + (tried && !/^\d{5}$/.test(d.plz) ? " ctl-error" : "") },
+                h(Icons.pin, { size: 16, className: "pre" }),
+                h("input", { inputMode: "numeric", maxLength: 5, value: d.plz, placeholder: "80331", onChange: (e) => set("plz", e.target.value.replace(/\D/g, "")) })))))
       )),
 
     h("div", { className: "vform-foot" },
       step > 0 && h("button", { className: "vbtn vbtn-back", onClick: () => go(step - 1) },
         h(Icons.chevron, { size: 16, style: { transform: "rotate(180deg)" } }), "Zurück"),
       h("button", {
-        className: "vbtn " + (step === 3 ? "vbtn-submit" : "vbtn-next"),
-        disabled: !valid[step] || sending,
+        className: "vbtn " + (step === 3 ? "vbtn-submit" : "vbtn-next") + (shaking ? " vbtn-shake" : ""),
+        disabled: sending,
         onClick: step === 3 ? submit : next,
         style: sending ? { opacity: 0.7 } : {}
       },

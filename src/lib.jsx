@@ -135,6 +135,7 @@ const MODELS = {
 };
 
 const DAMAGES = [
+  { id: "kein", label: "Kein Schaden", hint: "Gepflegter Gebrauchter" },
   { id: "unfall", label: "Unfallschaden", hint: "Kollision, Karosserie" },
   { id: "motor", label: "Motorschaden", hint: "Defekt, Geräusche" },
   { id: "getriebe", label: "Getriebeschaden", hint: "Schaltung, Kupplung" },

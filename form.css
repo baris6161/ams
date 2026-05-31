@@ -24,7 +24,8 @@
 /* Header */
 .vform-head { padding: 22px 26px 16px; border-bottom: 1px solid var(--card-line); }
 .vform-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-.vform-step-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--card-ink-dim); }
+.vform-step-label { font-size: 13px; font-weight: 600; color: var(--card-ink-dim); }
+.vform-step-name { color: var(--card-ink); font-weight: 700; }
 .vform-secure { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--card-ink-dim); }
 .vform-secure svg { color: var(--mint); }
 
@@ -141,6 +142,15 @@
 .vbtn-next { background: var(--card-ink); color: #fff; box-shadow: 0 8px 22px -8px rgba(8,18,28,.5); }
 .vbtn-next:hover:not(:disabled) { transform: translateY(-2px); background: #000; }
 .vbtn-next:disabled { opacity: .4; cursor: not-allowed; }
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  18%  { transform: translateX(-7px); }
+  36%  { transform: translateX(7px); }
+  54%  { transform: translateX(-5px); }
+  72%  { transform: translateX(5px); }
+  90%  { transform: translateX(-2px); }
+}
+.vbtn-shake { animation: shake .45s ease both !important; }
 .vbtn-back { flex: 0 0 auto; padding: 15px 18px; color: var(--card-ink-dim); font-weight: 600; }
 .vbtn-back:hover { color: var(--card-ink); }
 .vbtn-submit { background: linear-gradient(180deg, var(--accent), var(--accent-deep)); color: #fff; box-shadow: 0 10px 28px -8px var(--accent-glow); }
@@ -168,9 +178,69 @@
 .vform-trust span { display:inline-flex; align-items:center; gap:7px; font-size:12.5px; color:var(--paper-dim); font-weight:500; }
 .vform-trust svg { color: var(--accent-2); }
 
+/* Validation error banner (top of step) */
+.vform-error-banner {
+  display: flex; align-items: center; gap: 9px;
+  background: rgba(224,82,82,.08);
+  border: 1.5px solid rgba(224,82,82,.35);
+  border-radius: var(--radius-sm);
+  padding: 11px 14px;
+  font-size: 13.5px; font-weight: 700; color: #c94040;
+  margin-bottom: 18px;
+  animation: errIn .2s var(--ease-out) both;
+}
+.vform-error-banner svg { flex: none; color: #c94040; }
+
+/* Validation error states */
+.ctl-error {
+  border-color: #e05252 !important;
+  background: rgba(224,82,82,.05);
+  box-shadow: 0 0 0 3px rgba(224,82,82,.12);
+}
+.ctl-error:focus-within {
+  border-color: #e05252 !important;
+  box-shadow: 0 0 0 4px rgba(224,82,82,.18);
+}
+.field-error-msg {
+  font-size: 12px;
+  color: #d94f4f;
+  font-weight: 600;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  animation: errIn .2s var(--ease-out) both;
+}
+@keyframes errIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+.chips-error-wrap {
+  border: 1.5px solid #e05252;
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  background: rgba(224,82,82,.04);
+}
+.chips-error-msg {
+  font-size: 12px;
+  color: #d94f4f;
+  font-weight: 600;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.seg-error-wrap {
+  border: 1.5px solid #e05252;
+  border-radius: 10px;
+  padding: 3px;
+  background: rgba(224,82,82,.04);
+}
+
 @media (max-width: 560px) {
   .vgrid.two, .vgrid.three { grid-template-columns: 1fr; }
   .chips { grid-template-columns: 1fr; }
   .vform-body { padding: 20px 18px; min-height: 0; }
   .vform-head, .vform-foot { padding-left: 18px; padding-right: 18px; }
+  .vform-foot { flex-wrap: wrap; }
+  .vbtn-next, .vbtn-submit { order: 1; flex: 1 1 100%; }
+  .vbtn-back { order: 2; flex: 0 0 auto; align-self: center; }
 }

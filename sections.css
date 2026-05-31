@@ -19,8 +19,21 @@
 .nav-cta { display: flex; align-items: center; gap: 16px; }
 .nav-phone { font-size: 14px; font-weight: 600; color: var(--paper); display: inline-flex; gap: 8px; align-items: center; }
 .nav-phone svg { color: var(--accent-2); }
+/* WhatsApp mobile icon in nav — only on small screens */
+.nav-wa-mobile {
+  display: none;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(37,211,102,.15);
+  color: #25d366;
+  align-items: center; justify-content: center;
+  transition: background .2s;
+}
+.nav-wa-mobile:hover { background: rgba(37,211,102,.28); }
+
 @media (max-width: 940px) {
   .nav-links, .nav-phone { display: none; }
+  .nav-wa-mobile { display: flex; }
 }
 
 /* ---------------- HERO ---------------- */
@@ -180,7 +193,7 @@
 
 /* ---------------- FOOTER ---------------- */
 .footer { padding: 70px 0 40px; border-top: 1px solid var(--hairline); margin-top: 30px; }
-.foot-top { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 48px; }
+.foot-top { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.2fr 1fr; gap: 40px; padding-bottom: 48px; }
 .foot-brand img { height: 32px; margin-bottom: 18px; }
 .foot-brand p { font-size: 14px; color: var(--paper-dim); line-height: 1.6; max-width: 280px; }
 .foot-col h5 { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--paper-faint); margin-bottom: 16px; font-weight: 700; }
@@ -203,4 +216,66 @@
   .stats { padding: 28px 20px; }
   .sec { padding: 70px 0; }
   .fcta { padding: 40px 20px; }
+}
+
+/* ---------------- Footer contact links ---------------- */
+.foot-contact-link {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+}
+.foot-contact-link svg { flex: none; color: var(--accent-2); }
+
+/* ---------------- Floating contact button ---------------- */
+.float-contact {
+  position: fixed;
+  bottom: 28px; right: 28px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+.float-contact-btn {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-2), var(--accent));
+  color: var(--accent-ink);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 28px -6px rgba(78,161,255,.6);
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+  cursor: pointer;
+  flex: none;
+}
+.float-contact-btn:hover { transform: scale(1.08); box-shadow: 0 14px 36px -8px rgba(78,161,255,.7); }
+
+.float-contact-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+  animation: fcMenuIn .25s var(--ease-out) both;
+}
+@keyframes fcMenuIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+
+.float-contact-item {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  border-radius: 999px;
+  padding: 10px 18px 10px 14px;
+  font-size: 14px; font-weight: 600; color: var(--paper);
+  white-space: nowrap;
+  transition: background .2s, border-color .2s, transform .2s var(--ease);
+  box-shadow: 0 8px 24px -10px rgba(0,0,0,.5);
+}
+.float-contact-item:hover { background: rgba(20,30,44,.95); border-color: var(--hairline-strong); transform: translateX(-3px); }
+.float-contact-item svg { flex: none; }
+.float-contact-wa { color: #25d366; }
+.float-contact-wa svg { color: #25d366; }
+
+@media (max-width: 480px) {
+  .float-contact { bottom: 20px; right: 16px; }
+  .float-contact-btn { width: 52px; height: 52px; }
 }

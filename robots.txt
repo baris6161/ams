@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /tweaks-panel.jsx
+Disallow: /cookie-banner.jsx
+
+Sitemap: https://automitschaden.de/sitemap.xml
