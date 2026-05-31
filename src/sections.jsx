@@ -115,12 +115,14 @@ function Hero() {
 }
 
 function Logos() {
+  const brands = ["Audi", "BMW", "Mercedes-Benz", "VW", "Porsche", "Tesla", "Volvo", "Opel", "Ford", "Renault", "Toyota", "Hyundai", "Kia", "Skoda", "Seat"];
+  const track = [...brands, ...brands];
   return h("section", { className: "logos" },
     h("div", { className: "container" },
-      h("div", { className: "logos-lab", "data-reveal": true }, "Wir kaufen alle Marken — mit oder ohne Schaden"),
-      h("div", { className: "logos-row", "data-reveal": true },
-        ["Audi", "BMW", "Mercedes-Benz", "VW", "Porsche", "Tesla", "Volvo"].map((b) =>
-          h("span", { key: b }, b)))));
+      h("div", { className: "logos-lab", "data-reveal": true }, "Wir kaufen alle Marken — mit oder ohne Schaden")),
+    h("div", { className: "logos-marquee" },
+      h("div", { className: "logos-track" },
+        track.map((b, i) => h("span", { key: i }, b)))));
 }
 
 function Process() {
@@ -129,7 +131,7 @@ function Process() {
       h("div", { className: "sec-head", "data-reveal": true },
         h("span", { className: "eyebrow" }, "In vier Schritten"),
         h(AnimHeading, { text: "Vom Fahrzeug zur Auszahlung — so einfach.", baseDelay: 100 }),
-        h("p", null, "Ein klarer, transparenter Ablauf. Sie geben die Daten ein, wir kümmern uns um den Rest.")),
+        h("p", { "data-reveal": true, style: { "--reveal-delay": "320ms" } }, "Ein klarer, transparenter Ablauf. Sie geben die Daten ein, wir kümmern uns um den Rest.")),
       h("div", { className: "proc" },
         PROCESS.map((p, i) => h("div", { className: "proc-card", key: p.k, "data-reveal": true, style: { "--reveal-delay": i * 90 + "ms" } },
           h("span", { className: "k" }, p.k),
@@ -141,7 +143,7 @@ function Process() {
 function Showcase() {
   return h("section", { className: "sec", style: { paddingTop: 0 } },
     h("div", { className: "container showcase" },
-      h("div", { className: "showcase-img-wrap", "data-reveal": true },
+      h("div", { className: "showcase-img-wrap showcase-img-wipe", "data-reveal": true },
         h("img", {
           src: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=800&q=85",
           alt: "Professioneller Fahrzeugankauf — AutoMitSchaden",
@@ -157,7 +159,7 @@ function Showcase() {
             { icon: "shield", t: "Spezialisiert auf Schäden", d: "Wir bewerten Unfall-, Motor- und Getriebeschäden präzise — ohne pauschalen Sicherheitsabschlag." },
             { icon: "doc", t: "Komplette Abwicklung", d: "Kaufvertrag, Abmeldung und Transport übernehmen wir. Sie unterschreiben einmal — fertig." },
             { icon: "euro", t: "Ein Preis, der hält", d: "Der Festpreis im Angebot ist der Betrag, den Sie bei Übergabe erhalten. Garantiert." },
-          ].map((x) => h("div", { className: "showcase-item", key: x.t },
+          ].map((x, i) => h("div", { className: "showcase-item", key: x.t, "data-reveal": true, style: { "--reveal-delay": (200 + i * 120) + "ms" } },
             h("div", { className: "si" }, h(Icons[x.icon], { size: 20 })),
             h("div", null, h("h4", null, x.t), h("p", null, x.d))))))));
 }
@@ -168,9 +170,9 @@ function Benefits() {
       h("div", { className: "sec-head center", "data-reveal": true },
         h("span", { className: "eyebrow" }, "Ihre Vorteile"),
         h(AnimHeading, { text: "Der einfachste Weg, Ihr Fahrzeug zu verkaufen.", baseDelay: 80 }),
-        h("p", null, "Kein Inserieren, kein Feilschen, keine Besichtigungen. Nur ein faires Angebot und eine reibungslose Abholung.")),
-      h("div", { className: "bgrid", "data-reveal": true },
-        BENEFITS.map((b) => h("div", { className: "bcard", key: b.title },
+        h("p", { "data-reveal": true, style: { "--reveal-delay": "280ms" } }, "Kein Inserieren, kein Feilschen, keine Besichtigungen. Nur ein faires Angebot und eine reibungslose Abholung.")),
+      h("div", { className: "bgrid" },
+        BENEFITS.map((b, i) => h("div", { className: "bcard", key: b.title, "data-reveal": true, style: { "--reveal-delay": i * 90 + "ms" } },
           h("div", { className: "bi" }, h(Icons[b.icon], { size: 22 })),
           h("h3", null, b.title),
           h("p", null, b.text))))));
@@ -220,7 +222,7 @@ function Testimonials() {
       h("div", { className: "sec-head", "data-reveal": true },
         h("span", { className: "eyebrow" }, "Echte Erfahrungen"),
         h(AnimHeading, { text: "Tausende haben ihr Fahrzeug bereits verkauft.", baseDelay: 80 }),
-        h("p", null, "Verkäufer aus ganz Deutschland — vom Motorschaden bis zum gepflegten Gebrauchten.")),
+        h("p", { "data-reveal": true, style: { "--reveal-delay": "280ms" } }, "Verkäufer aus ganz Deutschland — vom Motorschaden bis zum gepflegten Gebrauchten.")),
       h("div", { className: "tgrid" },
         TESTIMONIALS.map((t, i) => h("div", { className: "tcard", key: t.name, "data-reveal": true, style: { "--reveal-delay": (i % 2) * 100 + "ms" } },
           h("div", { className: "tmeta" }, h(Stars, { size: 14 }), h("span", { className: "dmg-tag" }, t.dmg)),
@@ -252,7 +254,7 @@ function FinalCTA() {
       h("div", { className: "fcta", "data-reveal": true },
         h("span", { className: "eyebrow", style: { justifyContent: "center" } }, "Unverbindlich & kostenlos"),
         h(AnimHeading, { text: "Bereit, Ihr Fahrzeug zu verkaufen?", tag: "h2", baseDelay: 80 }),
-        h("p", null, "Geben Sie Ihre Fahrzeugdaten ein und erhalten Sie schnellstmöglich ein faires Angebot."),
+        h("p", { "data-reveal": true, style: { "--reveal-delay": "200ms" } }, "Geben Sie Ihre Fahrzeugdaten ein und erhalten Sie schnellstmöglich ein faires Angebot."),
         h("a", { href: "#top", className: "btn btn-primary", style: { fontSize: 16, padding: "17px 34px" }, onClick: (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); } }, "Fahrzeug jetzt bewerten", h(Icons.chevron, { size: 18 })))));
 }
 
@@ -263,25 +265,25 @@ function Footer() {
   return h("footer", { className: "footer" },
     h("div", { className: "container" },
       h("div", { className: "foot-top" },
-        h("div", { className: "foot-brand" },
+        h("div", { className: "foot-brand", "data-reveal": true, style: { "--reveal-delay": "0ms" } },
           h("img", { src: "assets/logo-light.png", alt: "AMS" }),
           h("p", null, "AutoMitSchaden — die moderne Plattform für den Ankauf Ihres Fahrzeugs in ganz Deutschland.")),
-        h("div", { className: "foot-col" }, h("h5", null, "Ankauf"),
+        h("div", { className: "foot-col", "data-reveal": true, style: { "--reveal-delay": "80ms" } }, h("h5", null, "Ankauf"),
           ["Unfallwagen", "Motorschaden", "Getriebeschaden", "Nicht fahrbereit", "Leasingrückläufer"].map((x) => h("a", { key: x, href: "#top" }, x))),
-        h("div", { className: "foot-col" }, h("h5", null, "Unternehmen"),
+        h("div", { className: "foot-col", "data-reveal": true, style: { "--reveal-delay": "160ms" } }, h("h5", null, "Unternehmen"),
           [
             { label: "So funktioniert's", href: "#prozess" },
             { label: "Über uns", href: "#" },
             { label: "Bewertungen", href: "#stimmen" },
           ].map((x) => h("a", { key: x.label, href: x.href }, x.label))),
-        h("div", { className: "foot-col" }, h("h5", null, "Kontakt"),
+        h("div", { className: "foot-col", "data-reveal": true, style: { "--reveal-delay": "240ms" } }, h("h5", null, "Kontakt"),
           h("a", { href: "tel:+491778979287", className: "foot-contact-link" }, h(Icons.phone, { size: 14 }), "+49 177 8979287"),
           h("a", { href: "https://wa.me/4917789792870", className: "foot-contact-link", target: "_blank", rel: "noopener" },
             h("svg", { width: 14, height: 14, viewBox: "0 0 24 24", fill: "currentColor" },
               h("path", { d: "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" })),
             "WhatsApp"),
           h("a", { href: "mailto:info@automitschaden.de", className: "foot-contact-link" }, h(Icons.mail, { size: 14 }), "info@automitschaden.de")),
-        h("div", { className: "foot-col" }, h("h5", null, "Rechtliches"),
+        h("div", { className: "foot-col", "data-reveal": true, style: { "--reveal-delay": "320ms" } }, h("h5", null, "Rechtliches"),
           h("a", { href: "impressum.html" }, "Impressum"),
           h("a", { href: "datenschutz.html" }, "Datenschutz"),
           h("button", { onClick: openConsent, style: { display: "block", padding: "6px 0", fontSize: 14, color: "var(--paper-dim)", textAlign: "left", cursor: "pointer", background: "none", border: "none", fontFamily: "inherit", transition: "color .2s" }, onMouseOver: (e) => e.target.style.color = "var(--paper)", onMouseOut: (e) => e.target.style.color = "var(--paper-dim)" }, "Cookie-Einstellungen"))),
