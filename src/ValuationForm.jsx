@@ -75,6 +75,8 @@ function ValuationForm() {
   const [sending, setSending] = useState(false);
   const [tried, setTried] = useState(false);
   const [shaking, setShaking] = useState(false);
+  const [honeypot, setHoneypot] = useState("");
+  const loadTime = useRef(Date.now());
   const [d, setD] = useState({
     brand: "", model: "", month: "", year: "", km: "", preisvorstellung: "",
     damages: [], drivable: "", tuev: "", finance: "", owners: 1,
@@ -131,6 +133,12 @@ function ValuationForm() {
 
   const submit = () => {
     if (!valid[4]) { setTried(true); shake(); return; }
+    // Anti-bot: honeypot check + time gate + session rate limit
+    const getCount = () => parseInt(sessionStorage.getItem("ams_sc") || "0");
+    if (honeypot !== "" || Date.now() - loadTime.current < 5000 || getCount() >= 3) {
+      setSending(false); setDone(true); return;
+    }
+    sessionStorage.setItem("ams_sc", getCount() + 1);
     setTried(false);
     setSending(true);
     const dmgText = d.damages.includes("kein")
@@ -208,6 +216,9 @@ function ValuationForm() {
       h("div", { className: "vform-title" }, cur.t),
       h("div", { className: "vform-sub" }, cur.s)),
 
+    h("input", { name: "website", autoComplete: "off", tabIndex: -1,
+      className: "honeypot-field", value: honeypot,
+      onChange: (e) => setHoneypot(e.target.value) }),
     h("div", { className: "vform-body" },
       tried && !valid[step] && h("div", { className: "vform-error-banner" },
         h("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2.2, strokeLinecap: "round" },
