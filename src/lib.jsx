@@ -162,10 +162,10 @@ const BENEFITS = [
 ];
 
 const TESTIMONIALS = [
-  { name: "Markus T.", car: "BMW 320d · 2016", dmg: "Motorschaden", quote: "Angebot am selben Tag, Abholung zwei Tage später. Geld war bei Übergabe sofort da. So muss das sein.", rating: 5, loc: "München", date: "Dez. 2024" },
-  { name: "Sandra K.", car: "VW Passat · 2014", dmg: "Unfallschaden", quote: "Nach dem Unfall wollte keiner den Wagen. AMS hat fair bewertet und alles übernommen. Absolut stressfrei.", rating: 5, loc: "Köln", date: "März 2025" },
-  { name: "Daniel R.", car: "Audi A4 Avant · 2013", dmg: "Getriebeschaden", quote: "Kein Feilschen, kein Druck. Der Festpreis stand und wurde exakt so ausgezahlt. Sehr professionell.", rating: 5, loc: "Hamburg", date: "Aug. 2025" },
-  { name: "Elif Y.", car: "Mercedes C 220 · 2015", dmg: "Hagelschaden", quote: "Online bewerten, Bilder hoch, fertig. Innerhalb kürzester Zeit ein konkretes Angebot. Top.", rating: 5, loc: "Stuttgart", date: "Jan. 2026" },
+  { name: "Markus T.", car: "BMW 320d", dmg: "Motorschaden", quote: "Angebot am selben Tag, Abholung zwei Tage später. Geld war bei Übergabe sofort da. So muss das sein.", rating: 5, loc: "München" },
+  { name: "Sandra K.", car: "VW Passat", dmg: "Unfallschaden", quote: "Nach dem Unfall wollte keiner den Wagen. AMS hat fair bewertet und alles übernommen. Absolut stressfrei.", rating: 5, loc: "Köln" },
+  { name: "Daniel R.", car: "Audi A4 Avant", dmg: "Getriebeschaden", quote: "Kein Feilschen, kein Druck. Der Festpreis stand und wurde exakt so ausgezahlt. Sehr professionell.", rating: 5, loc: "Hamburg" },
+  { name: "Elif Y.", car: "Mercedes C 220", dmg: "Hagelschaden", quote: "Online bewerten, Bilder hoch, fertig. Innerhalb kürzester Zeit ein konkretes Angebot. Top.", rating: 5, loc: "Stuttgart" },
 ];
 
 const FAQS = [

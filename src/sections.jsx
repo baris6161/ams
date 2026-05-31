@@ -229,8 +229,7 @@ function Testimonials() {
           h("p", { className: "tq" }, "\u201E", t.quote, "\u201C"),
           h("div", { className: "tf" },
             h("div", { className: "tav" }, t.name.charAt(0)),
-            h("div", { className: "tn" }, h("b", null, t.name), h("span", null, t.car, " · ", t.loc))),
-          t.date && h("div", { style: { fontSize: "11.5px", color: "var(--paper-faint)", marginTop: "-6px" } }, t.date))))));
+            h("div", { className: "tn" }, h("b", null, t.name), h("span", null, t.car, " · ", t.loc))))))));
 }
 
 function FAQ() {
