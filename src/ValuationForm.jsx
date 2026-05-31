@@ -8,7 +8,7 @@ const YEARS = Array.from({ length: 86 }, (_, i) => String(2025 - i));
 
 // EmailJS config — set your credentials here
 const EJS_SERVICE        = "YOUR_SERVICE_ID";
-const EJS_TEMPLATE       = "YOUR_TEMPLATE_ID";        // Business-Mail → info@automitschaden.de
+const EJS_TEMPLATE       = "YOUR_TEMPLATE_ID";        // Business-Mail → barisaktas6161@outlook.de
 const EJS_TEMPLATE_CONFIRM = "YOUR_CONFIRM_TEMPLATE_ID"; // Bestätigung → Nutzer-E-Mail
 const EJS_KEY            = "YOUR_PUBLIC_KEY";
 // EmailJS Confirm-Template Felder: to_email, user_name, brand, model, km, year, month, damages, drivable
@@ -152,7 +152,7 @@ function ValuationForm() {
       tuev: d.tuev,
       finance: d.finance || "Nein",
       owners: d.owners >= 6 ? "6+" : String(d.owners),
-      to_email: "info@automitschaden.de",
+      to_email: "barisaktas6161@outlook.de",
     };
     const confirmParams = {
       to_email: d.email,
